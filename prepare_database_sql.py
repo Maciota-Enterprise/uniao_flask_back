@@ -5,70 +5,73 @@ from mysql.connector import errorcode
 
 print("Conectando...")
 try:
-      conn = mysql.connector.connect(
-            host='127.0.0.1',
-            user='root',
-            password='admin'
-      )
+        conn = mysql.connector.connect(
+                host='127.0.0.1',
+                user='root',
+                password='admin'
+        )
 except mysql.connector.Error as err:
-      if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print('Existe algo errado no nome de usuário ou senha')
-      else:
-            print(err)
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+                print('Existe algo errado no nome de usuário ou senha')
+        else:
+                print(err)
 
 cursor = conn.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS `jogoteca`;")
-cursor.execute("CREATE DATABASE `jogoteca`;")
-cursor.execute("USE `jogoteca`;")
+cursor.execute("DROP DATABASE IF EXISTS `uniao_flask`;")
+cursor.execute("CREATE DATABASE `uniao_flask`;")
+cursor.execute("USE `uniao_flask`;")
 
-# criando tabelas
 # criando tabelas
 TABLES = {}
 TABLES['Enterprise'] = ('''
         CREATE TABLE IF NOT EXISTS `Enterprise` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(20) NOT NULL,
-        cnpj VARCHAR(14) NOT NULL,
-        contact VARCHAR(12) NOT NULL,
-        email VARCHAR(50) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `id` INT(11) NOT NULL AUTO_INCREMENT,
+        `name` VARCHAR(20) NOT NULL,
+        `cnpj` VARCHAR(14) NOT NULL,
+        `contact` VARCHAR(12) NOT NULL,
+        `email` VARCHAR(50) NOT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `last_modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Levels'] = ('''
         CREATE TABLE IF NOT EXISTS `Levels` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT,
         id_enterprise INT,
         name VARCHAR(20) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_enterprise) REFERENCES enterprise(id)
+        FOREIGN KEY (id_enterprise) REFERENCES enterprise(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['URLs'] = ('''
         CREATE TABLE IF NOT EXISTS `URLs` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT,
         id_levels INT,
         url VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_levels) REFERENCES levels(id)
+        FOREIGN KEY (id_levels) REFERENCES levels(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Products'] = ('''
         CREATE TABLE IF NOT EXISTS `Products` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT,
         id_enterprise INT, 
         name VARCHAR(50) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_enterprise) REFERENCES enterprise(id)
+        FOREIGN KEY (id_enterprise) REFERENCES enterprise(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Users'] = ('''
         CREATE TABLE IF NOT EXISTS `Users` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_levels INT,
         name VARCHAR(20) NOT NULL,
         trading_name VARCHAR(20) NOT NULL,
@@ -78,45 +81,49 @@ TABLES['Users'] = ('''
         password VARCHAR(100) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_levels) REFERENCES levels(id)
+        FOREIGN KEY (id_levels) REFERENCES levels(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Notifications'] = ('''
         CREATE TABLE IF NOT EXISTS `Notifications` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_users INT,
         message VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_users) REFERENCES users(id),
-        FOREIGN KEY (id_products) REFERENCES products(id)
+        FOREIGN KEY (id_products) REFERENCES products(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Farmer'] = ('''
         CREATE TABLE IF NOT EXISTS `Farmer` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_users INT,
         cotact VARCHAR(12) NOT NULL,
         email VARCHAR(50) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_users) REFERENCES users(id)
+        FOREIGN KEY (id_users) REFERENCES users(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 
 TABLES['City'] = ('''   
         CREATE TABLE IF NOT EXISTS `City` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         name VARCHAR(20) NOT NULL,
         uf VARCHAR(2) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 
 TABLES['Farm'] = ('''
         CREATE TABLE IF NOT EXISTS `Farm` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_farmer INT,
         id_city INT,
         name VARCHAR(20) NOT NULL,
@@ -124,48 +131,52 @@ TABLES['Farm'] = ('''
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farmer) REFERENCES farmer(id),
-        FOREIGN KEY (id_city) REFERENCES city(id)
+        FOREIGN KEY (id_city) REFERENCES city(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Observations'] = ('''
         CREATE TABLE IF NOT EXISTS `Observations` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_farm INT,
         id_users INT,
         message VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farm) REFERENCES farm(id),
-        FOREIGN KEY (id_users) REFERENCES users(id)
+        FOREIGN KEY (id_users) REFERENCES users(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Visity'] = ('''
         CREATE TABLE IF NOT EXISTS `Visity` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_farm INT,
         id_users INT,
         date DATE NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farm) REFERENCES farm(id),
-        FOREIGN KEY (id_users) REFERENCES users(id)
+        FOREIGN KEY (id_users) REFERENCES users(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Obs_visity'] = ('''
         CREATE TABLE IF NOT EXISTS `Obs_visity` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_visity INT,
         id_users INT,
         message VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_visity) REFERENCES visity(id),
-        FOREIGN KEY (id_users) REFERENCES users(id)
+        FOREIGN KEY (id_users) REFERENCES users(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Media'] = ('''
         CREATE TABLE IF NOT EXISTS `Media` (
-        id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        id INT NOT NULL AUTO_INCREMENT ,
         id_farm INT,
         id_users INT,
         type VARCHAR(20) NOT NULL,
@@ -175,7 +186,8 @@ TABLES['Media'] = ('''
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farm) REFERENCES farm(id),
-        FOREIGN KEY (id_users) REFERENCES users(id)
+        FOREIGN KEY (id_users) REFERENCES users(id),
+        PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 for tabela in TABLES:
@@ -268,9 +280,7 @@ data["media"] = [
         (2, 2,'Vídeo', 'https://exemplo.com/video1', -22.9068, -43.1729)
 ]
 
-
-
-# Loop para inserir dados em cada tabela
+# loop para inserir dados em cada tabela
 for table_name, table_data in data.items():
         columns = ', '.join(table_data['columns'])
         placeholders = ', '.join(['%s'] * len(table_data['columns']))
@@ -283,7 +293,7 @@ for table_name, table_data in data.items():
 cursor.execute('SELECT * FROM Enterprise')
 print(' -------------  Empresas:  -------------')
 for row in cursor.fetchall():
-        print(row)  # Aqui você pode ajustar o print para exibir as colunas desejadas
+        print(row)  
 
 conn.commit()
 

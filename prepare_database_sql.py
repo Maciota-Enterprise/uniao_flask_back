@@ -43,7 +43,7 @@ TABLES['Levels'] = ('''
         name VARCHAR(20) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_enterprise) REFERENCES enterprise(id),
+        FOREIGN KEY (id_enterprise) REFERENCES Enterprise(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -54,7 +54,7 @@ TABLES['URLs'] = ('''
         url VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_levels) REFERENCES levels(id),
+        FOREIGN KEY (id_levels) REFERENCES Levels(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -65,7 +65,7 @@ TABLES['Products'] = ('''
         name VARCHAR(50) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_enterprise) REFERENCES enterprise(id),
+        FOREIGN KEY (id_enterprise) REFERENCES Enterprise(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -81,7 +81,7 @@ TABLES['Users'] = ('''
         password VARCHAR(100) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_levels) REFERENCES levels(id),
+        FOREIGN KEY (id_levels) REFERENCES Levels(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -92,8 +92,7 @@ TABLES['Notifications'] = ('''
         message VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_users) REFERENCES users(id),
-        FOREIGN KEY (id_products) REFERENCES products(id),
+        FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -105,7 +104,7 @@ TABLES['Farmer'] = ('''
         email VARCHAR(50) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_users) REFERENCES users(id),
+        FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -131,7 +130,7 @@ TABLES['Farm'] = ('''
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farmer) REFERENCES farmer(id),
-        FOREIGN KEY (id_city) REFERENCES city(id),
+        FOREIGN KEY (id_city) REFERENCES City(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -144,7 +143,7 @@ TABLES['Observations'] = ('''
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farm) REFERENCES farm(id),
-        FOREIGN KEY (id_users) REFERENCES users(id),
+        FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -157,7 +156,7 @@ TABLES['Visity'] = ('''
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_farm) REFERENCES farm(id),
-        FOREIGN KEY (id_users) REFERENCES users(id),
+        FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -170,7 +169,7 @@ TABLES['Obs_visity'] = ('''
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_visity) REFERENCES visity(id),
-        FOREIGN KEY (id_users) REFERENCES users(id),
+        FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -185,8 +184,8 @@ TABLES['Media'] = ('''
         longitude FLOAT(10) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_farm) REFERENCES farm(id),
-        FOREIGN KEY (id_users) REFERENCES users(id),
+        FOREIGN KEY (id_farm) REFERENCES Farm(id),
+        FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -208,77 +207,107 @@ enterprise_sql = 'INSERT INTO enterprise (name, cnpj, contact, email) VALUES (%s
 # Dados fictícios para inserção nas tabelas
 data = {}
 
-data["enterprises"] = [
-        ("ABC Company", "12345678901234", "987654321", "abc@example.com"),
-        ("XYZ Corporation", "98765432109876", "123456789", "xyz@example.com")
-]
-
-data["levels"] = [
-        (1, "Interno"),
-        (1, "Médio"),
-        (1, "Avançado"),
-        (2,"Inicial"),
-        (2,"Intermediário"),
-        (2,"Avançado")
-]
-
-data["urls"] = [
-        (1, "https://exemplo.com/nivel1"),
-        (2, "https://exemplo.com/nivel2"),
-        (3, "https://exemplo.com/nivel3")
-]
-
-data["products"] = [
-        (1, "Ferramenta A"),
-        (2, "Software B")
-]
-
-data["users"] = [
-        (1, "João",  'TradingCo', '12345678901234', '987654321', 'joao123', 'senha123'),
-        (2, "Maria", 'TechBiz', '98765432109876', '123456789', 'maria_tech', 'segura123')
-]
-
-data["notifications"] = [
-        (1, "Primeira notificação para usuário 1"),  # Substitua os IDs 1 e 1 pelos IDs reais dos usuários
-        (2, "Segunda notificação para usuário 2"),  # Substitua os IDs 2 e 2 pelos IDs reais dos usuários
-]
-
-data["farmer_data"] = [
-        (1, '987654321', 'jose@example.com'),  # Substitua o ID 1 pelo ID real do usuário associado
-        (2, '999999999', 'ana@example.com'),  # Substitua o ID 2 pelo ID real do usuário associado
+data["Enterprise"] = {
+        "columns": ["name", "cnpj", "contact", "email"],
+        "values": [
+                ("ABC Company", "12345678901234", "987654321", "abc@example.com"),
+                ("XYZ Corporation", "98765432109876", "123456789", "xyz@example.com")
         ]
+}
 
-
-data["cities"] = [
-        ("São Paulo", "SP"),
-        ("Rio de Janeiro", "RJ")
-]
-
-data["farm"] = [
-        (1, 1, 'Sítio do José', 100.5),  #
-        (2, 2, 'Chácara da Ana', 75.2),  # Substitua o ID 2 pelo ID real do agricultor e da cidade associados
+data["Levels"] = {
+        "columns": ["id_enterprise", "name"],
+        "values": [
+                (1, "Interno"),
+                (1, "Médio"),
+                (1, "Avançado"),
+                (2, "Inicial"),
+                (2, "Intermediário"),
+                (2, "Avançado")
         ]
+}
+
+data["URLs"] = {
+        "columns": ["id_levels", "url"],
+        "values": [
+                (1, "https://exemplo.com/nivel1"),
+                (2, "https://exemplo.com/nivel2"),
+                (3, "https://exemplo.com/nivel3")
+        ]
+}
+
+data["Products"] = {
+        "columns": ["id_enterprise", "name"],
+        "values": [
+                (1, "Ferramenta A"),
+                (2, "Software B")
+        ]
+}
+
+data["Users"] = {
+        "columns": ["id_levels", "name", "trading_name", "cnpj", "contact", "nickname", "password"],
+        "values": [
+                (1, "João",  'TradingCo', '12345678901234', '987654321', 'joao123', 'senha123'),
+                (2, "Maria", 'TechBiz', '98765432109876', '123456789', 'maria_tech', 'segura123')
+        ]
+}
+
+data["Notifications"] = {
+        "columns": ["id_users", "message"],
+        "values": [
+                (1, "Primeira notificação para usuário 1"),  
+                (2, "Segunda notificação para usuário 2"),  
+        ]
+}
 
 
-data["observations"] = [
+data["Farmer"] = {
+        "columns": ["id_users", "cotact", "email"],
+        "values": [
+        (1, '987654321', 'jose@example.com'), 
+        (2, '999999999', 'ana@example.com'),  
+        ]
+}
+
+data["Farm"] = {
+        "columns": ["id_farmer", "id_city", "name", "area"],
+        "values": [
+        (1, 1, 'Sítio do José', 100.5),  
+        (2, 2, 'Chácara da Ana', 75.2),  
+        ]
+}
+
+data["Observations"] = {
+        "columns": ["id_farm", "id_users", "message"],
+        "values": [
         (1, 1,"Muito bonito!"),
         (2, 2, "Legal!")
-]
+        ]
+}
 
-data["visits"] = [
+data["Visity"] = {
+        "columns": ["id_farm", "id_users", "date"],
+        "values": [
         (1, 1, '2023-01-15'),
         (2, 2, '2023-02-20')
-]
+        ]
+}
 
-data["obs_visits"] = [
+data["Obs_visity"] = {
+        "columns": ["id_visity", "id_users", "message"],
+        "values": [
         (1, 1, "Fazenda muito bonita!"),
         (2, 2, "Conheci os campos!")
-]
+        ]
+}
 
-data["media"] = [
+data["Media"] = {
+        "columns": ["id_farm", "id_users", "type", "url", "latitude", "longitude"],
+        "values": [
         (1, 1,'Foto', 'https://exemplo.com/foto1', -23.5505, -46.6333),
         (2, 2,'Vídeo', 'https://exemplo.com/video1', -22.9068, -43.1729)
-]
+        ]
+}
 
 # loop para inserir dados em cada tabela
 for table_name, table_data in data.items():
@@ -293,7 +322,15 @@ for table_name, table_data in data.items():
 cursor.execute('SELECT * FROM Enterprise')
 print(' -------------  Empresas:  -------------')
 for row in cursor.fetchall():
-        print(row)  
+        print(row)
+
+cursor.execute('SELECT * FROM Levels')
+for row in cursor.fetchall():
+        print(row)
+
+cursor.execute('SELECT * FROM URLs')
+for row in cursor.fetchall():
+        print(row)
 
 conn.commit()
 

@@ -269,6 +269,14 @@ data["Farmer"] = {
         ]
 }
 
+data["City"] = {
+        "columns": ["name", "uf"],
+        "values": [
+        ("Jaboticabal", "SP"),  
+        ("Ribeirão Preto", "SP"),  
+        ]
+}
+
 data["Farm"] = {
         "columns": ["id_farmer", "id_city", "name", "area"],
         "values": [

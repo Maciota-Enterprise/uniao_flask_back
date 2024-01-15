@@ -4,6 +4,8 @@ from flask import request, jsonify
 import traceback
 from ..models.users import Users, user_schema, users_schema
 
+max_password_length = 100
+
 def post_user():
     id_levels = request.json['id_levels']
     name = request.json['name']
@@ -11,7 +13,7 @@ def post_user():
     cnpj = request.json['cnpj']
     contact = request.json['contact']
     nickname = request.json['nickname']
-    password = generate_password_hash(request.json['password'])
+    password = generate_password_hash(request.json['password'][:max_password_length])
     
     user = Users(id_levels, name, trading_name, cnpj, contact, nickname, password)
 

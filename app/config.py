@@ -1,3 +1,6 @@
+#instale o mysql-connector-python ao invez do mysql-connector
+#caso já tenha instalado o mysql-connector-python, desinstale-o e instale o mysql-connector com o comando: pip install mysql-connector
+
 DEBUG = True
 SQLALCHEMY_DATABASE_URI = \
     '{SGDB}://{usuario}:{senha}@{servidor}/{database}'.format(

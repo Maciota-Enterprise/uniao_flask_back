@@ -1,7 +1,6 @@
 from datetime import datetime
 from app import db, ma
 
-
 '''definindo classe/tablela dos usuários  e seus campos necessários'''
 class Levels(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

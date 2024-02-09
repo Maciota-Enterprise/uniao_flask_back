@@ -79,6 +79,7 @@ TABLES['Users'] = ('''
         contact VARCHAR(12) NOT NULL,
         nickname VARCHAR(15) NOT NULL,
         password VARCHAR(200) NOT NULL,
+        active TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_levels) REFERENCES Levels(id),

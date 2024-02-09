@@ -25,3 +25,65 @@ def post_user():
     except Exception as e:
         traceback.print_exc()
         return jsonify({'message': 'Erro ao cadastrar usuário!'}), 500
+
+def update_user(id):
+    id_levels = request.json['id_levels']
+    name = request.json['name']
+    trading_name = request.json['trading_name']
+    cnpj = request.json['cnpj']
+    contact = request.json['contact']
+    nickname = request.json['nickname']
+    password = generate_password_hash(request.json['password'][:max_password_length])
+    
+    user = Users.query.get(id)
+    
+    if not user:
+        return jsonify({'message': 'Usuário não encontrado!'}), 404
+    
+    pass_hash = generate_password_hash(password)
+    
+    try:
+        user.id_levels = id_levels
+        user.name = name
+        user.trading_name = trading_name
+        user.cnpj = cnpj
+        user.contact = contact
+        user.nickname = nickname
+        user.password = pass_hash
+        db.session.commit()
+        result = user_schema.dump(user)
+        return jsonify({'message': 'Usuário atualizado com sucesso!', 'data': result}), 200
+    except:
+        return jsonify({'message': 'Erro ao atualizar usuário!', 'data':{}}), 500
+    
+def get_users():
+    all_users =  Users.query.all()
+    if all_users:
+        result = users_schema.dump(all_users)
+        return jsonify({'message':'Successfully fetched', 'data': result})
+    
+    return jsonify({'message':'No users found', 'data':{}})
+
+def get_user(id):
+    user = Users.query.get(id)
+    if user:
+        result = user_schema.dump(user)
+        return jsonify({'message':'Successfully fetched', 'data': result}), 201
+    
+    return jsonify({'message':'No user found', 'data':{}}), 404
+
+# def delete_user(id):
+#     user = Users.query.get(id)
+#     if not user:
+#         return jsonify({'message': 'Usuário não encontrado!'}), 404
+    
+#     if user:
+#         try:
+#             db.session.delete(user)
+#             db.session.commit()
+#             result = user_schema.dump(user)
+#             return jsonify({'message': 'Usuário deletado com sucesso!', 'data': result}), 200
+#         except Exception as e:
+#             print(e)
+#             return jsonify({'message': 'Erro ao deletar usuário!', 'data':{}}), 500
+        

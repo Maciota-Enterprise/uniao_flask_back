@@ -12,6 +12,10 @@ def root():
 def post_user():
     return users.post_user()
 
+@app.route('/users/<id>', methods=['PUT'])
+def put_user(id):
+    return users.update_user(id)
+
 @app.route('/test_database')
 def test_database():
     try:
@@ -20,3 +24,17 @@ def test_database():
     except Exception as e:
         print(e)
         return jsonify({'message': 'Database is down!'}), 500
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    return users.get_users()
+
+@app.route('/users/<id>', methods=['GET'])
+def get_user(id):
+    return users.get_user(id)
+
+# @app.route('/users/<id>', methods=['DELETE'])
+# def delete_user(id):
+#     return users.delete_user(id)
+
+

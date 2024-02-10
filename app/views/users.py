@@ -12,10 +12,10 @@ def post_user():
     trading_name = request.json['trading_name']
     cnpj = request.json['cnpj']
     contact = request.json['contact']
-    nickname = request.json['nickname']
+    username = request.json['username']
     password = generate_password_hash(request.json['password'][:max_password_length])
     
-    user = Users(id_levels, name, trading_name, cnpj, contact, nickname, password)
+    user = Users(id_levels, name, trading_name, cnpj, contact, username, password)
 
     try:
         db.session.add(user)
@@ -32,14 +32,14 @@ def update_user(id):
     trading_name = request.json['trading_name']
     cnpj = request.json['cnpj']
     contact = request.json['contact']
-    nickname = request.json['nickname']
+    username = request.json['username']
     password = generate_password_hash(request.json['password'][:max_password_length])
+    active = request.json['active']
     
     user = Users.query.get(id)
     
     if not user:
         return jsonify({'message': 'Usuário não encontrado!'}), 404
-    
     pass_hash = generate_password_hash(password)
     
     try:
@@ -48,14 +48,16 @@ def update_user(id):
         user.trading_name = trading_name
         user.cnpj = cnpj
         user.contact = contact
-        user.nickname = nickname
+        user.username = username
         user.password = pass_hash
+        user.active = active
         db.session.commit()
         result = user_schema.dump(user)
         return jsonify({'message': 'Usuário atualizado com sucesso!', 'data': result}), 200
     except:
         return jsonify({'message': 'Erro ao atualizar usuário!', 'data':{}}), 500
-    
+
+
 def get_users():
     all_users =  Users.query.all()
     if all_users:
@@ -71,6 +73,17 @@ def get_user(id):
         return jsonify({'message':'Successfully fetched', 'data': result}), 201
     
     return jsonify({'message':'No user found', 'data':{}}), 404
+
+def user_by_username(username):
+    try:
+        return Users.query.filter(Users.username == username).one()
+    except Exception as e:
+        print(e)
+        return None
+
+
+
+
 
 # def delete_user(id):
 #     user = Users.query.get(id)

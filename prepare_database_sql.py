@@ -77,7 +77,7 @@ TABLES['Users'] = ('''
         trading_name VARCHAR(20) NOT NULL,
         cnpj VARCHAR(14) NOT NULL,
         contact VARCHAR(12) NOT NULL,
-        nickname VARCHAR(15) NOT NULL,
+        username VARCHAR(15) NOT NULL,
         password VARCHAR(200) NOT NULL,
         active TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -103,6 +103,8 @@ TABLES['Farmer'] = ('''
         id_users INT,
         cotact VARCHAR(12) NOT NULL,
         email VARCHAR(50) NOT NULL,
+        inscricao_est VARCHAR(14) NOT NULL,
+        cadastro_rural VARCHAR(14) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_users) REFERENCES Users(id),
@@ -173,6 +175,17 @@ TABLES['Obs_visity'] = ('''
         FOREIGN KEY (id_users) REFERENCES Users(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
+
+TABLES["Documents"] = ('''
+                CREATE TABLE IF NOT EXISTS `Documents` (
+                id INT NOT NULL AUTO_INCREMENT ,
+                id_farmer INT,
+                url VARCHAR(255) NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (id_farmer) REFERENCES Farmer(id),
+                PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Media'] = ('''
         CREATE TABLE IF NOT EXISTS `Media` (
@@ -246,7 +259,7 @@ data["Products"] = {
 }
 
 data["Users"] = {
-        "columns": ["id_levels", "name", "trading_name", "cnpj", "contact", "nickname", "password"],
+        "columns": ["id_levels", "name", "trading_name", "cnpj", "contact", "username", "password"],
         "values": [
                 (1, "João",  'TradingCo', '12345678901234', '987654321', 'joao123', 'senha123'),
                 (2, "Maria", 'TechBiz', '98765432109876', '123456789', 'maria_tech', 'segura123')
@@ -263,10 +276,10 @@ data["Notifications"] = {
 
 
 data["Farmer"] = {
-        "columns": ["id_users", "cotact", "email"],
+        "columns": ["id_users", "cotact", "email", "inscricao_est", "cadastro_rural"],
         "values": [
-        (1, '987654321', 'jose@example.com'), 
-        (2, '999999999', 'ana@example.com'),  
+        (1, '987654321', 'jose@example.com', '12345678901234', '987654321'), 
+        (2, '999999999', 'ana@example.com', '98765432109876', '123456789'),  
         ]
 }
 

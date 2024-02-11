@@ -6,7 +6,8 @@ from sqlalchemy import text
 
 #teste da api
 @app.route('/', methods=['GET'])
-def root():
+@helper.token_required
+def root(current_user):
     return jsonify({'message': 'Hello, World!'})
 
 #teste do banco de dados

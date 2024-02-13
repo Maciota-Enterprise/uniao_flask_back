@@ -75,14 +75,22 @@ TABLES['Users'] = ('''
         id_levels INT,
         name VARCHAR(20) NOT NULL,
         trading_name VARCHAR(20) NOT NULL,
-        cnpj VARCHAR(14) NOT NULL,
         contact VARCHAR(12) NOT NULL,
-        username VARCHAR(15) NOT NULL,
+        email VARCHAR(50) NOT NULL,
         password VARCHAR(200) NOT NULL,
         active TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_levels) REFERENCES Levels(id),
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
+
+TABLES['Business_group'] = ('''
+        CREATE TABLE IF NOT EXISTS `Business_group` (
+        id INT NOT NULL AUTO_INCREMENT,
+        name VARCHAR(20) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -97,20 +105,31 @@ TABLES['Notifications'] = ('''
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
-TABLES['Farmer'] = ('''
-        CREATE TABLE IF NOT EXISTS `Farmer` (
+TABLES['Client'] = ('''
+        CREATE TABLE IF NOT EXISTS `Client` (
         id INT NOT NULL AUTO_INCREMENT ,
         id_users INT,
-        cotact VARCHAR(12) NOT NULL,
+        id_group INT,
+        empresarial_name VARCHAR(20) NOT NULL,
+        fantasy_name VARCHAR(20) NOT NULL,
+        cnpj VARCHAR(14) NOT NULL,
+        bairro VARCHAR(20) NOT NULL,
+        cep VARCHAR(8) NOT NULL,
+        address VARCHAR(50) NOT NULL,
+        number INT NOT NULL,
+        city VARCHAR(20) NOT NULL,
+        uf VARCHAR(2) NOT NULL,
         email VARCHAR(50) NOT NULL,
-        inscricao_est VARCHAR(14) NOT NULL,
-        cadastro_rural VARCHAR(14) NOT NULL,
+        b2b TINYINT(1) NOT NULL DEFAULT 0,
+        venda_direta TINYINT(1) NOT NULL DEFAULT 0,
+        revenda TINYINT(1) NOT NULL DEFAULT 0,
+        active TINYINT(1) NOT NULL DEFAULT 1,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (id_users) REFERENCES Users(id),
+        FOREIGN KEY (id_group) REFERENCES Business_group(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
-
 
 TABLES['City'] = ('''   
         CREATE TABLE IF NOT EXISTS `City` (
@@ -126,13 +145,14 @@ TABLES['City'] = ('''
 TABLES['Farm'] = ('''
         CREATE TABLE IF NOT EXISTS `Farm` (
         id INT NOT NULL AUTO_INCREMENT ,
-        id_farmer INT,
+        id_client INT,
         id_city INT,
         name VARCHAR(20) NOT NULL,
         area FLOAT(10) NOT NULL,
+        contact VARCHAR(12) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_farmer) REFERENCES farmer(id),
+        FOREIGN KEY (id_client) REFERENCES Client(id),
         FOREIGN KEY (id_city) REFERENCES City(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
@@ -177,15 +197,15 @@ TABLES['Obs_visity'] = ('''
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES["Documents"] = ('''
-                CREATE TABLE IF NOT EXISTS `Documents` (
-                id INT NOT NULL AUTO_INCREMENT ,
-                id_farmer INT,
-                url VARCHAR(255) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (id_farmer) REFERENCES Farmer(id),
-                PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
+        CREATE TABLE IF NOT EXISTS `Documents` (
+        id INT NOT NULL AUTO_INCREMENT ,
+        id_client INT,
+        url VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (id_client) REFERENCES Client(id),
+        PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
 TABLES['Media'] = ('''
         CREATE TABLE IF NOT EXISTS `Media` (
@@ -259,10 +279,19 @@ data["Products"] = {
 }
 
 data["Users"] = {
-        "columns": ["id_levels", "name", "trading_name", "cnpj", "contact", "username", "password"],
+        "columns": ["id_levels", "name", "trading_name", "contact", "email", "password"],
         "values": [
-                (1, "João",  'TradingCo', '12345678901234', '987654321', 'joao123', 'senha123'),
-                (2, "Maria", 'TechBiz', '98765432109876', '123456789', 'maria_tech', 'segura123')
+                (1, "João",  'TradingCo',  '987654321', 'joao123@hotmail.com', 'senha123'),
+                (2, "Maria", 'TechBiz', '123456789', 'maria_tech@hotmail.com', 'segura123')
+        ]
+}
+
+data["Business_group"] = {
+        "columns": ["id","name"],
+        "values": [
+                (1,"Grupo A"),
+                (2,"Grupo B"),
+                (3,"Grupo C")
         ]
 }
 
@@ -274,14 +303,14 @@ data["Notifications"] = {
         ]
 }
 
-
-data["Farmer"] = {
-        "columns": ["id_users", "cotact", "email", "inscricao_est", "cadastro_rural"],
+data["client"] = {
+        "columns": ["id_users", "id_group", "email", "empresarial_name", "fantasy_name", "cnpj", "bairro", "cep", "address", "number", "city", "uf", "b2b", "venda_direta", "revenda", "active"],
         "values": [
-        (1, '987654321', 'jose@example.com', '12345678901234', '987654321'), 
-        (2, '999999999', 'ana@example.com', '98765432109876', '123456789'),  
+        (1, 1, 'jose@example.com',  'Empresarial Name 1', 'Fantasy Name 1','12345678901234', 'Bairro 1', '12345678', 'Adress 1', '123', 'City 1', 'UF',False, False, True, True),
+        (2, 2, 'andre@example.com',  'Empresarial Name 2', 'Fantasy Name 2','12345678901234', 'Bairro 2', '12345678', 'Adress 2', '123', 'City 2', 'UF',False, False, True, True), 
         ]
 }
+
 
 data["City"] = {
         "columns": ["name", "uf"],
@@ -292,10 +321,10 @@ data["City"] = {
 }
 
 data["Farm"] = {
-        "columns": ["id_farmer", "id_city", "name", "area"],
+        "columns": ["id_client", "id_city", "name", "area", "contact"],
         "values": [
-        (1, 1, 'Sítio do José', 100.5),  
-        (2, 2, 'Chácara da Ana', 75.2),  
+        (1, 1, 'Sítio do José', 100.5, '987654321'),  
+        (2, 2, 'Chácara da Ana', 75.2, '123456789'),  
         ]
 }
 

@@ -1,22 +1,31 @@
 from werkzeug.security import generate_password_hash
+from flask import redirect, flash
 from app import db
 from flask import request, jsonify
 import traceback
 from ..models.users import Users, user_schema, users_schema
 
-max_password_length = 100
+#funções
+def user_by_email(email):
+    try:
+        return Users.query.filter(Users.email == email).one()
+    except Exception as e:
+        print(e)
+        return None
 
-def post_user():
+def signup():
     id_levels = request.json['id_levels']
     name = request.json['name']
     trading_name = request.json['trading_name']
-    cnpj = request.json['cnpj']
     contact = request.json['contact']
-    username = request.json['username']
-    password = generate_password_hash(request.json['password'][:max_password_length])
-    
-    user = Users(id_levels, name, trading_name, cnpj, contact, username, password)
+    email = request.json['email']
+    password = generate_password_hash(request.json['password'])[:100]
+    user = Users(id_levels, name, trading_name,  contact, email, password)
+    print(len(user.password))
 
+    if user_by_email(email):
+        return({'message': 'Usuário já cadastrado!'}), 409
+        
     try:
         db.session.add(user)
         db.session.commit()
@@ -30,10 +39,9 @@ def update_user(id):
     id_levels = request.json['id_levels']
     name = request.json['name']
     trading_name = request.json['trading_name']
-    cnpj = request.json['cnpj']
     contact = request.json['contact']
     username = request.json['username']
-    password = generate_password_hash(request.json['password'][:max_password_length])
+    password = generate_password_hash(request.json['password'])[:100]
     active = request.json['active']
     
     user = Users.query.get(id)
@@ -46,7 +54,6 @@ def update_user(id):
         user.id_levels = id_levels
         user.name = name
         user.trading_name = trading_name
-        user.cnpj = cnpj
         user.contact = contact
         user.username = username
         user.password = pass_hash
@@ -56,6 +63,19 @@ def update_user(id):
         return jsonify({'message': 'Usuário atualizado com sucesso!', 'data': result}), 200
     except:
         return jsonify({'message': 'Erro ao atualizar usuário!', 'data':{}}), 500
+
+# def login_user():
+#     username = request.json['username']
+#     password = request.json['password']
+#     user = user_by_username(username)
+#     if not user:
+#         return jsonify({'message': 'Usuário não encontrado!'}), 404
+#     if user and check_password_hash(user.password, password):
+#         token = jwt.encode({'username': user.username, 'exp': datetime.datetime.now() + datetime.timedelta(hours=12)}, 
+#                         app.config['SECRET_KEY'], algorithm="HS256")
+#         return jsonify({'message': 'Validated succesfully','token': token,
+#                         'exp': datetime.datetime.now() + datetime.timedelta(hours=12)})
+#     return jsonify({'message': 'Erro ao logar usuário!'}), 500
 
 
 def get_users():
@@ -74,12 +94,6 @@ def get_user(id):
     
     return jsonify({'message':'No user found', 'data':{}}), 404
 
-def user_by_username(username):
-    try:
-        return Users.query.filter(Users.username == username).one()
-    except Exception as e:
-        print(e)
-        return None
 
 
 

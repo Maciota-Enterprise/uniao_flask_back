@@ -1,9 +1,19 @@
 from app import db
 from app import app
 from flask import jsonify
-from app.views import users, helper
+from app.views import users, helper, client
 from sqlalchemy import text
 
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    return users.signup()
+
+@app.route('/cadastrar_cliente', methods=['POST'])
+def cadastrar_cliente():
+    return client.post_client()
+
+############################################################################################################
 #teste da api
 @app.route('/', methods=['GET'])
 @helper.token_required
@@ -19,6 +29,7 @@ def test_database():
     except Exception as e:
         print(e)
         return jsonify({'message': 'Database is down!'}), 500
+############################################################################################################
 
 @app.route('/users', methods=['POST'])
 def post_user():

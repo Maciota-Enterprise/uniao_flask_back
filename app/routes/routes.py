@@ -13,6 +13,10 @@ def signup():
 def cadastrar_cliente():
     return client.post_client()
 
+@app.route('/auth', methods=['POST'])
+def authentication():
+    return helper.auth()
+
 ############################################################################################################
 #teste da api
 @app.route('/', methods=['GET'])
@@ -47,9 +51,7 @@ def get_users():
 def get_user(id):
     return users.get_user(id)
 
-@app.route('/auth', methods=['POST'])
-def authentication():
-    return helper.auth()
+
 
 # @app.route('/users/<id>', methods=['DELETE'])
 # def delete_user(id):

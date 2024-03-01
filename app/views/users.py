@@ -1,19 +1,33 @@
-from werkzeug.security import generate_password_hash
-from flask import redirect, flash
-from app import db
-from flask import request, jsonify
-import traceback
 from ..models.users import Users, user_schema, users_schema
+from werkzeug.security import generate_password_hash
+from flask import request, jsonify
+from flask import session, url_for, redirect, flash
+from typing import Optional, Tuple, Union, Dict
+from app import db
+import traceback
+
+'''
+Funções de usuário
+Funcs:
+- user_by_email(email: str) -> Optional[Users]
+- signup() -> Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int]
+- update_user(id: int) -> Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int]
+- get_users()
+- get_user(id)
+- delete_user(id)
+
+
+'''
 
 #funções
-def user_by_email(email):
+def user_by_email(email: str) -> Optional[Users]: # Optional[Users] é um tipo de retorno que pode ser Users ou None
     try:
         return Users.query.filter(Users.email == email).one()
     except Exception as e:
         print(e)
         return None
 
-def signup():
+def signup() -> Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int]:
     id_levels = request.json['id_levels']
     name = request.json['name']
     trading_name = request.json['trading_name']
@@ -35,7 +49,12 @@ def signup():
         traceback.print_exc()
         return jsonify({'message': 'Erro ao cadastrar usuário!'}), 500
 
-def update_user(id):
+def logout():
+    session['usuario_logado'] = None
+    flash('Logout realizado')
+    return redirect(url_for('signin'))
+
+def update_user(id: int) -> Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int]: # Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int] é um tipo de retorno que pode ser um dicionário ou uma tupla
     id_levels = request.json['id_levels']
     name = request.json['name']
     trading_name = request.json['trading_name']
@@ -93,10 +112,6 @@ def get_user(id):
         return jsonify({'message':'Successfully fetched', 'data': result}), 201
     
     return jsonify({'message':'No user found', 'data':{}}), 404
-
-
-
-
 
 
 # def delete_user(id):

@@ -1,7 +1,7 @@
 from app import db
 from app import app
 from flask import jsonify
-from app.views import users, helper, client
+from app.views import users, helper, client, farm
 from sqlalchemy import text
 
 # register users
@@ -56,6 +56,11 @@ def cadastrar_cliente():
 def delete_client(id):
     return client.delete_client(id)
 
+#########   farms
+
+@app.route('/api/v1/farms', methods=['GET'])
+def get_farms():
+    return farm.get_farms()
 
 
 ############################################################################################################

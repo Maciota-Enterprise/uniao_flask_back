@@ -145,10 +145,16 @@ TABLES['City'] = ('''
 TABLES['Farm'] = ('''
         CREATE TABLE IF NOT EXISTS `Farm` (
         id INT NOT NULL AUTO_INCREMENT ,
-        id_Clients INT,
+        id_clients INT,
         id_city INT,
         name VARCHAR(20) NOT NULL,
         area FLOAT(10) NOT NULL,
+        latitude FLOAT(10) NOT NULL,
+        longitude FLOAT(10) NOT NULL,
+        adress_street VARCHAR(50) NOT NULL,
+        adress_number VARCHAR(10) NOT NULL,
+        adress_bairro VARCHAR(20) NOT NULL,
+        adress_city VARCHAR(20) NOT NULL,
         contact VARCHAR(12) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -321,10 +327,10 @@ data["City"] = {
 }
 
 data["Farm"] = {
-        "columns": ["id_Clients", "id_city", "name", "area", "contact"],
+        "columns": ["id_Clients", "id_city", "name", "area", "latitude", "longitude", "adress_street", "adress_number", "adress_bairro", "adress_city", "contact"],
         "values": [
-        (1, 1, 'Sítio do José', 100.5, '987654321'),  
-        (2, 2, 'Chácara da Ana', 75.2, '123456789'),  
+        (1, 1, 'Sítio do José', 100.5, '1234', '12351', 'endereco1', 'numero1', 'bairro1', 'cidade1', '987654321'),  
+        (2, 2, 'Chácara da Ana', 75.2, '12345', '1236', 'endereco2', 'numero2', 'bairro2', 'cidade2', '123456789'),  
         ]
 }
 

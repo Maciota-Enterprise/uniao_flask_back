@@ -1,5 +1,3 @@
-from werkzeug.security import generate_password_hash
-from flask import redirect, flash
 from app import db
 from flask import request, jsonify
 import traceback

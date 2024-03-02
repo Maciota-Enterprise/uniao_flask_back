@@ -27,6 +27,10 @@ class Users(db.Model):
         self.password = password
 
 '''definindo o schema do marshmallow para facilitar o uso de json'''
+
+class UserFilterSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'id_levels', 'name', 'trading_name', 'contact', 'active','email', 'created_at', 'last_modified')
 class UsersSchema(ma.Schema):
     class Meta:
         fields = ('id', 'id_levels', 'name', 'trading_name', 'contact', 'active','email', 'password', 'created_at', 'last_modified')

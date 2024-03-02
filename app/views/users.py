@@ -7,15 +7,14 @@ from app import db
 import traceback
 
 '''
-Funções de usuário
-Funcs:
+Funções de usuário:
+
 - user_by_email(email: str) -> Optional[Users]
 - signup() -> Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int]
 - update_user(id: int) -> Tuple[Union[Dict[str, Union[str,int]], Tuple[str,int]], int]
 - get_users()
 - get_user(id)
 - delete_user(id)
-
 
 '''
 
@@ -106,12 +105,14 @@ def get_users():
     return jsonify({'message':'No users found', 'data':{}})
 
 def get_user(id):
-    user = Users.query.get(id)
-    if user:
-        result = user_schema.dump(user)
-        return jsonify({'message':'Successfully fetched', 'data': result}), 201
-    
-    return jsonify({'message':'No user found', 'data':{}}), 404
+    try:
+        user = Users.query.get(id)
+        if user:
+            result = user_schema.dump(user)
+            return jsonify({'message':'Successfully fetched', 'data': result}), 201
+    except Exception as e:
+        print(e)    
+        return jsonify({'message':'No user found', 'data':{}}), 404
 
 
 # def delete_user(id):

@@ -20,7 +20,7 @@ class Clients(db.Model):
     number = db.Column(db.String(10), nullable=False)
     city = db.Column(db.String(20), nullable=False)
     uf = db.Column(db.String(2), nullable=False)
-    contact = db.Column(db.String(12), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
     b2b = db.Column(db.Boolean(1), default=True, nullable=False)
     venda_direta = db.Column(db.Boolean(1), default=True, nullable=False)
     revenda = db.Column(db.Boolean(1), default=True, nullable=False)
@@ -28,7 +28,7 @@ class Clients(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
     last_modified = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now())
 
-    def __init__(self, id_levels, id_group, empresarial_name, fantasy_name, cnpj, bairro, cep, address, number, city, uf, contact, b2b, venda_direta, revenda, active = True):
+    def __init__(self, id_levels, id_group, empresarial_name, fantasy_name, cnpj, bairro, cep, address, number, city, uf, email, b2b, venda_direta, revenda, active = True):
         self.id_levels = id_levels
         self.id_group = id_group
         self.empresarial_name = empresarial_name
@@ -40,16 +40,20 @@ class Clients(db.Model):
         self.number = number
         self.city = city
         self.uf = uf
-        self.contact = contact
+        self.email = email
         self.b2b = b2b
         self.venda_direta = venda_direta
         self.revenda = revenda
         self.active = active
         
 '''definindo o schema do marshmallow para facilitar o uso de json'''
+class ClientsFilterSchema(ma.Schema):
+    class Meta:
+        fields = ('id', 'id_levels', 'id_group', 'empresarial_name', 'fantasy_name', 'cnpj', 'bairro', 'cep', 'address', 'number', 'city', 'uf', 'email', 'b2b', 'venda_direta', 'revenda', 'active','created_at', 'last_modified')
+
 class ClientsSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'id_levels', 'id_group', 'empresarial_name', 'fantasy_name', 'cnpj', 'bairro', 'cep', 'address', 'number', 'city', 'uf', 'contact', 'b2b', 'venda_direta', 'revenda', 'active', 'created_at', 'last_modified')
+        fields = ('id', 'id_levels', 'id_group', 'empresarial_name', 'fantasy_name', 'cnpj', 'bairro', 'cep', 'address', 'number', 'city', 'uf', 'email', 'b2b', 'venda_direta', 'revenda', 'active', 'created_at', 'last_modified')
 
-user_schema = ClientsSchema()
-users_schema = ClientsSchema(many=True)  #o parametro many=True é usado quando queremos retornar mais de um registro (Um array) 
+client_schema = ClientsSchema()
+clients_schema = ClientsSchema(many=True)  #o parametro many=True é usado quando queremos retornar mais de um registro (Um array) 

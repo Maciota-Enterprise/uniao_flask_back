@@ -105,8 +105,8 @@ TABLES['Notifications'] = ('''
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
-TABLES['Client'] = ('''
-        CREATE TABLE IF NOT EXISTS `Client` (
+TABLES['Clients'] = ('''
+        CREATE TABLE IF NOT EXISTS `Clients` (
         id INT NOT NULL AUTO_INCREMENT ,
         id_users INT,
         id_group INT,
@@ -145,14 +145,14 @@ TABLES['City'] = ('''
 TABLES['Farm'] = ('''
         CREATE TABLE IF NOT EXISTS `Farm` (
         id INT NOT NULL AUTO_INCREMENT ,
-        id_client INT,
+        id_Clients INT,
         id_city INT,
         name VARCHAR(20) NOT NULL,
         area FLOAT(10) NOT NULL,
         contact VARCHAR(12) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_client) REFERENCES Client(id),
+        FOREIGN KEY (id_Clients) REFERENCES Clients(id),
         FOREIGN KEY (id_city) REFERENCES City(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
@@ -199,11 +199,11 @@ TABLES['Obs_visity'] = ('''
 TABLES["Documents"] = ('''
         CREATE TABLE IF NOT EXISTS `Documents` (
         id INT NOT NULL AUTO_INCREMENT ,
-        id_client INT,
+        id_Clients INT,
         url VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_client) REFERENCES Client(id),
+        FOREIGN KEY (id_Clients) REFERENCES Clients(id),
         PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;''')
 
@@ -303,7 +303,7 @@ data["Notifications"] = {
         ]
 }
 
-data["client"] = {
+data["Clients"] = {
         "columns": ["id_users", "id_group", "email", "empresarial_name", "fantasy_name", "cnpj", "bairro", "cep", "address", "number", "city", "uf", "b2b", "venda_direta", "revenda", "active"],
         "values": [
         (1, 1, 'jose@example.com',  'Empresarial Name 1', 'Fantasy Name 1','12345678901234', 'Bairro 1', '12345678', 'Adress 1', '123', 'City 1', 'UF',False, False, True, True),
@@ -321,7 +321,7 @@ data["City"] = {
 }
 
 data["Farm"] = {
-        "columns": ["id_client", "id_city", "name", "area", "contact"],
+        "columns": ["id_Clients", "id_city", "name", "area", "contact"],
         "values": [
         (1, 1, 'Sítio do José', 100.5, '987654321'),  
         (2, 2, 'Chácara da Ana', 75.2, '123456789'),  

@@ -13,24 +13,6 @@ def signup():
 def authentication():
     return helper.auth()
 
-############################################################################################################
-#teste da api
-@app.route('/', methods=['GET'])
-@helper.token_required
-def root(current_user):
-    return jsonify({'message': 'Hello, World!'})
-
-#teste do banco de dados
-@app.route('/test_database')
-def test_database():
-    try:
-        db.session.query(text("1")).from_statement(text("SELECT 1")).all()
-        return jsonify({'message': 'Database is up!'})
-    except Exception as e:
-        print(e)
-        return jsonify({'message': 'Database is down!'}), 500
-############################################################################################################
-
 @app.route('/api/v1/users/post', methods=['POST'])
 def post_user():
     return users.post_user()
@@ -49,11 +31,6 @@ def get_user(id):
 
 #########   clients
 
-@app.route('/api/v1/client/post', methods=['POST'])
-# @helper.token_required
-def cadastrar_cliente():
-    return client.post_client()
-
 @app.route('/api/v1/clients', methods=['GET'])
 def get_clients():
     return client.get_clients()
@@ -70,13 +47,25 @@ def update_client(id):
 def client_search():
     return client.client_search()
 
+@app.route('/api/v1/client/post', methods=['POST'])
+# @helper.token_required
+def cadastrar_cliente():
+    return client.post_client()
+
 @app.route('/api/v1/client/delete/<id>', methods=['DELETE'])
 def delete_client(id):
     return client.delete_client(id)
 
 
-# @app.route('/users/<id>', methods=['DELETE'])
-# def delete_user(id):
-#     return users.delete_user(id)
 
-
+############################################################################################################
+#teste do banco de dados
+@app.route('/test_database')
+def test_database():
+    try:
+        db.session.query(text("1")).from_statement(text("SELECT 1")).all()
+        return jsonify({'message': 'Database is up!'})
+    except Exception as e:
+        print(e)
+        return jsonify({'message': 'Database is down!'}), 500
+############################################################################################################

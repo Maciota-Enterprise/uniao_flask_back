@@ -17,12 +17,18 @@ Funções de clientes:
 ## GET /client_list
 def get_clients():
     try:
-        clients = Clients.query.all()
-        if clients:
-            result = clients_schema.dump(clients)
-            return jsonify({'message': 'Clientes encontrados!', 'data': result}), 200
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        order_by = request.args.get('order_by', 'id', type=str)
         
-        return jsonify({'message': 'Nenhum cliente encontrado!', 'data':{}}), 404
+        client_query = Clients.query.order_by(order_by)
+        total_clients = client_query.count()
+        
+        clients = client_query.paginate(page=page, per_page=per_page)
+        clients_schema = ClientsSchema(many=True)
+        result = clients_schema.dump(clients.items)
+        
+        return jsonify({'message': 'Clientes encontrados!', 'data': result, 'total_clients': total_clients, 'current_page': page, 'per_page': per_page}), 200
     except Exception as e:
         print(e)
         return jsonify({'message': 'Erro ao buscar clientes!', 'data':{}}), 500 
@@ -39,7 +45,6 @@ def post_client():
         if Clients.query.filter_by(cnpj=data["cnpj"]).first():
             return jsonify({'message': 'Cliente já cadastrado!'}), 409
         
-        print(data)
         #novo cliente
         client = Clients(**data)
         db.session.add(client)

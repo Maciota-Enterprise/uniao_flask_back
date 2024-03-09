@@ -2,12 +2,15 @@ from app import db
 from app import app
 from flask import jsonify
 from app.views import users, helper, client, farm
+from app.views.client import ClientController
+from app.views.farm import FarmController
+from app.views.users import Users, UserController
 from sqlalchemy import text
 
 # register users
 @app.route('/api/v1/signup', methods=['POST'])
 def signup():
-    return users.signup()
+    return Users.signup()
 
 @app.route('/api/v1/auth', methods=['POST'])
 def authentication():
@@ -19,48 +22,48 @@ def post_user():
 
 @app.route('/api/v1/users/update/<id>', methods=['PUT'])
 def put_user(id):
-    return users.update_user(id)
+    return UserController.update_user(id)
 
 @app.route('/api/v1/users', methods=['GET'])
 def get_users():
-    return users.get_users()
+    return UserController.get_users()
 
 @app.route('/api/v1/users/<id>', methods=['GET'])
 def get_user(id):
-    return users.get_user(id)
+    return UserController.get_user(id)
 
 #########   clients
 
 @app.route('/api/v1/clients', methods=['GET'])
 def get_clients():
-    return client.get_clients()
+    return ClientController.get_clients()
 
 @app.route('/api/v1/client/<id>', methods=['GET'])
 def client_by_id(id):
-    return client.client_by_id(id)
+    return ClientController.client_by_id(id)
 
 @app.route('/api/v1/client/update/<id>', methods=['PUT']) 
 def update_client(id):
-    return client.update_client(id)
+    return ClientController.update_client(id)
 
 @app.route('/api/v1/client/search', methods=['POST'])
 def client_search():
-    return client.client_search()
+    return ClientController.client_search()
 
 @app.route('/api/v1/client/post', methods=['POST'])
 # @helper.token_required
 def cadastrar_cliente():
-    return client.post_client()
+    return ClientController.post_client()
 
 @app.route('/api/v1/client/delete/<id>', methods=['DELETE'])
 def delete_client(id):
-    return client.delete_client(id)
+    return ClientController.delete_client(id)
 
 #########   farms
 
 @app.route('/api/v1/farms', methods=['GET'])
 def get_farms():
-    return farm.get_farms()
+    return FarmController.get_farms()
 
 
 ############################################################################################################

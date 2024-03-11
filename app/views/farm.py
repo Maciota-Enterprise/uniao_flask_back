@@ -86,3 +86,18 @@ class FarmController:
         db.session.commit()
         result = farm_schema.dump(farm)
         return jsonify({'message': 'Farm updated successfully!', 'data': result}), 200
+    
+## DELETE /delete_farm
+def delete_farm(id: int):
+    farm = Farm.query.get(id)
+    if not farm:
+        return jsonify({'message': 'Farm not found!'}), 404
+    
+    try:
+        db.session.delete(farm)
+        db.session.commit()
+        return jsonify({'message': 'Farm deleted successfully!'}), 200
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+        return jsonify({'message': 'Erro ao deletar cliente!'}), 500

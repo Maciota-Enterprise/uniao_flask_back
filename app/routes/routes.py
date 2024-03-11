@@ -60,11 +60,25 @@ def delete_client(id):
     return ClientController.delete_client(id)
 
 #########   farms
-
 @app.route('/api/v1/farms', methods=['GET'])
 def get_farms():
     return FarmController.get_farms()
 
+@app.route('/api/v1/farm/post', methods=['POST'])
+def post_farms():
+    return FarmController.post_farms()
+
+@app.route('/api/v1/farm/update/<id>', methods=['PUT'])
+def put_farm(id):
+    return FarmController.update_farm(id)
+
+@app.route('/api/v1/farm/search', methods=['POST'])
+def farm_search():
+    return FarmController.farm_search()
+
+@app.route('/api/v1/farm/delete/<id>', methods=['DELETE'])
+def delete_farm(id):
+    return FarmController.delete_farm(id)
 
 ############################################################################################################
 #teste do banco de dados

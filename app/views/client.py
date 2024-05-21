@@ -83,11 +83,6 @@ class ClientController:
         client = Clients.query.get(id)
         if not client:
             return jsonify({'message': 'Cliente não encontrado!'}), 404
-        
-        
-        if not client:
-            return jsonify({'message': 'Cliente não encontrado!'}), 404
-        
         try:
             client.empresarial_name = data["empresarial_name"]
             client.fantasy_name = data["fantasy_name"]

@@ -15,10 +15,10 @@ class Product(db.Model):
 
 class Requests(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id_client = db.Column(db.Integer, db.ForeignKey('client'), nullable=False)
-    id_farm = db.Column(db.Integer, db.ForeignKey('farm'), nullable=False)
-    id_user = db.Column(db.Integer, db.ForeignKey('user'), nullable=False)
-    id_product = db.Column(db.Integer, db.ForeignKey('product'), nullable=False)
+    id_client = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
+    id_farm = db.Column(db.Integer, db.ForeignKey('farm.id'), nullable=False)
+    id_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    id_product = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
     product_quantity = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(10), nullable=False)
